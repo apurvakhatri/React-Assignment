@@ -5,5 +5,7 @@ const moduleSchema = new mongoose.Schema({
     slide: { type: String, required: true },
     video: { type: String, required: true },
     text: { type: String, required: true },
-    isLocked: { type: Boolean, default: true },
 });
+
+// export const moduleSchemaOnly = moduleSchema; // Export the schema
+export const moduleModel = mongoose.model("Module", moduleSchema); // Export the model

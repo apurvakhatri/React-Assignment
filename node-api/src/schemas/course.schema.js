@@ -1,10 +1,10 @@
 import mongoose from "mongoose";
-import moduleSchema from "./module.schema.js"
 
 const courseSchema = new mongoose.Schema({
     title: { type: String, required: true },
     description: { type: String, required: true },
-    modules: [moduleSchema],
-  });
+    modules: [{ type: mongoose.Schema.Types.ObjectId, ref: 'Module' }], // Store references to Module IDs
+    isLocked: { type: Boolean, default: true },
+});
 
-export const Course = mongoose.model("Course", courseSchema);
+export const courseModel = mongoose.model("Course", courseSchema); // Export the model

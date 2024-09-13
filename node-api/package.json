@@ -38,7 +38,8 @@
     "start:dev": "nodemon --exec babel-node --experimental-specifier-resolution=node src/index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "seed": "node src/mongo/seedData.js",
-    "clear": "node src/mongo/clearDbs.js"
+    "clear": "node src/mongo/clearDbs.js",
+    "reseed": "node src/mongo/demoseed.js"
   },
   "author": "",
   "license": "ISC"

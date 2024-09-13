@@ -7,19 +7,27 @@ import { courseModel } from "../schemas/course.schema.js";
 import { mongoModule } from "../Database/mongoModules.js";
 import { mongoCourse } from "../Database/mongoCourses.js";
 
-const ReseedAction = () => {
-  async function clear() {
-    console.log("Inside clear");
-    dbConnect();
-    await userModel.deleteMany({});
-    await moduleModel.deleteMany({}); // Clear modules
-    await courseModel.deleteMany({}); // Clear courses
-    console.log("DB cleared");
+
+function shuffleArray(array) {
+    let currentIndex = array.length, randomIndex;
+
+    while (currentIndex !== 0) {
+      randomIndex = Math.floor(Math.random() * currentIndex);
+      currentIndex--;
+
+      [array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]];
+    }
+
+    return array;
   }
 
-  async function seedDB() {
+async function seedDB() {
     console.log("Inside seedDB");
-    await clear();
+    dbConnect();
+    await userModel.deleteMany({});
+    await moduleModel.deleteMany({});
+    await courseModel.deleteMany({});
+    console.log("DB cleared");
     const salt = await bcrypt.genSalt(10);
     const hashPassword = await bcrypt.hash("secret", salt);
 
@@ -53,7 +61,7 @@ const ReseedAction = () => {
 
       const newCourse = new courseModel({
         title: course.title,
-        description: course.description,
+        description: course.Description,
         modules: courseModules,
         isLocked: course.isLocked || true,
       });
@@ -64,7 +72,6 @@ const ReseedAction = () => {
     console.log("DB seeded");
   }
 
-  seedDB();
-};
-
-export default ReseedAction;
+  seedDB().then(() => {
+    mongoose.connection.close();
+  });
