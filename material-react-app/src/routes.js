@@ -35,6 +35,8 @@ Coded by www.creative-tim.com
   10. The `component` key is used to store the component of its route.
 */
 
+import CourseHomePage from "layouts/courses/components/course-homepage";
+
 // Material Dashboard 2 React layouts
 import Dashboard from "layouts/dashboard";
 import Tables from "layouts/tables";
@@ -48,6 +50,8 @@ import ResetPasswordSideNav from "layouts/authentication/reset-password/cover";
 
 import UserProfile from "layouts/user-profile";
 import UserManagement from "layouts/user-management";
+
+import CourseManagement from "layouts/courses/components/course-management";
 
 import Login from "auth/login";
 import Register from "auth/register";
@@ -147,6 +151,14 @@ const routes = [
     component: <ResetPasswordSideNav />,
   },
   {
+    type: "examples",
+    name: "Course Management",
+    key: "course-management",
+    icon: <Icon fontSize="small">list</Icon>,
+    route: "/course-management",
+    component: <CourseManagement />,
+  },
+  {
     type: "auth",
     name: "Login",
     key: "login",
@@ -177,6 +189,13 @@ const routes = [
     icon: <Icon fontSize="small">assignment</Icon>,
     route: "/auth/reset-password",
     component: <ResetPassword />,
+  },
+  {
+    type: "course",
+    name: "Course Home Page",
+    key: "course-homepage",
+    route: "/courses/:course_id",
+    component: <CourseHomePage />,
   },
 ];
 
