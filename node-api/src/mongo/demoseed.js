@@ -7,6 +7,7 @@ import { courseModel } from "../schemas/course.schema.js";
 import { mongoModule } from "../Database/mongoModules.js";
 import { mongoCourse } from "../Database/mongoCourses.js";
 
+//New file created to seed modules and courses table in the database.
 
 function shuffleArray(array) {
     let currentIndex = array.length, randomIndex;

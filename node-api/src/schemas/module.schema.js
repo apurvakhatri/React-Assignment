@@ -7,5 +7,5 @@ const moduleSchema = new mongoose.Schema({
     text: { type: String, required: true },
 });
 
-// export const moduleSchemaOnly = moduleSchema; // Export the schema
-export const moduleModel = mongoose.model("Module", moduleSchema); // Export the model
+
+export const moduleModel = mongoose.model("Module", moduleSchema);

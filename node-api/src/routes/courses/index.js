@@ -1,53 +1,53 @@
 import express from "express";
-import db from "../../Database/index.js"
+import { courseModel } from "../../schemas/course.schema.js";
+import { moduleModel } from "../../schemas/module.schema.js";
 
 const router = express.Router();
 
-router.get("/", (req, res) => {
-    const courses = db.courses;
-    res.send(courses);
+// Get all courses
+router.get("/", async (req, res) => {
+    try {
+        const courses = await courseModel.find();  // Fetch all courses
+        res.send(courses);
+    } catch (err) {
+        res.status(500).send({ message: "Error fetching courses", error: err });
+    }
 });
 
-router.get("/:course_id", (req, res) => {
+// Get a course by ID and its modules
+router.get("/:course_id", async (req, res) => {
     const { course_id } = req.params;
-    const course = db.courses.find((c) => c.id === course_id);
 
-    if (course) {
-      // Fetch Modules for the course
-      const modulesWithDetails = course.Modules.map((moduleId) => {
-        const module = db.modules.find((m) => m.id === moduleId);
-        // Return either the found module or a placeholder
-        return (
-          module || {
-            id: moduleId,
-            title: "Unknown",
-            slide: "",
-            video: "",
-            text: "",
-            isLocked: true,
-          }
-        );
-      });
+    try {
+        const course = await courseModel.findById(course_id);
 
-      // Create a new course object with the modules populated
-      const courseWithModules = { ...course, Modules: modulesWithDetails };
-
-      res.send(courseWithModules);
-    } else {
-      res.status(404).send({ message: "Course not found" });
+        if (course) {
+            res.send(course);  // Course and its populated modules
+        } else {
+            res.status(404).send({ message: "Course not found" });
+        }
+    } catch (err) {
+        res.status(500).send({ message: "Error fetching course", error: err });
     }
-  });
+});
 
-  router.put("/:course_id/unlock", (req, res) => {
+// Unlock a course
+router.put("/:course_id/unlock", async (req, res) => {
     const { course_id } = req.params;
-    const course = db.courses.find((c) => c.id === course_id);
 
-    if (course) {
-      course.isLocked = false;
-      res.send(course);
-    } else {
-      res.status(404).send({ message: "Course not found" });
+    try {
+        const course = await courseModel.findById(course_id);
+
+        if (course) {
+            course.isLocked = false;
+            await course.save();
+            res.send(course);
+        } else {
+            res.status(404).send({ message: "Course not found" });
+        }
+    } catch (err) {
+        res.status(500).send({ message: "Error unlocking course", error: err });
     }
-  });
+});
 
 export default router;

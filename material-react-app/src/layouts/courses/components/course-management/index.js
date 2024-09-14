@@ -1,24 +1,25 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { Link } from "react-router-dom";
-// @mui material components
+
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 
-// Material Dashboard 2 React components
+
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
 import MDAlert from "components/MDAlert";
 
-// Material Dashboard 2 React example components
+
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import DataTable from "examples/Tables/DataTable";
 
-// Columns definition for the DataTable
+const BACKEND_API_URL = process.env.REACT_APP_API_URL;
+
+
 const columns = [
-  { Header: "ID", accessor: "id", align: "center" },
   {
     Header: "Title",
     accessor: "title",
@@ -36,15 +37,15 @@ const columns = [
 const CourseManagement = () => {
   const [rows, setRows] = useState([]);
 
-  // Fetch courses data from the backend
+  // Fetching courses data from the backend
   useEffect(() => {
     const fetchCourses = async () => {
       try {
-        const response = await axios.get("http://localhost:8080/courses"); // Replace with your backend URL
+        const response = await axios.get(BACKEND_API_URL+"/courses");
         const coursesData = response.data.map((course) => ({
-          id: course.id,
+          id: course._id,
           title: course.title,
-          description: course.Description,
+          description: course.description,
           isLocked: course.isLocked ? "Yes" : "No",
         }));
         setRows(coursesData);

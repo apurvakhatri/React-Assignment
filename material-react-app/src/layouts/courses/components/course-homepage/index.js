@@ -2,43 +2,53 @@ import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import axios from "axios";
 
-// @mui material components
+
 import Grid from "@mui/material/Grid";
 import Card from "@mui/material/Card";
 import Divider from "@mui/material/Divider";
 
-// Material Dashboard 2 React components
+
 import MDBox from "components/MDBox";
 import MDTypography from "components/MDTypography";
-import MDButton from "components/MDButton"; // Import MDButton for unlock
+import MDButton from "components/MDButton";
 
-// Material Dashboard 2 React example components
+
 import DashboardLayout from "examples/LayoutContainers/DashboardLayout";
 import DashboardNavbar from "examples/Navbars/DashboardNavbar";
 import Footer from "examples/Footer";
 import MDAlert from "components/MDAlert";
 
-// Material UI Icons
+
 import LockIcon from "@mui/icons-material/Lock";
-import LockOpenIcon from "@mui/icons-material/LockOpen";
+const BACKEND_API_URL = process.env.REACT_APP_API_URL;
 
 const CourseHomePage = () => {
-  const { course_id } = useParams(); // Get course_id from the URL
-  const [course, setCourse] = useState(null); // Store course data
-  const [loading, setLoading] = useState(true); // Loading state
-  const [error, setError] = useState(null); // Error state
+  const { course_id } = useParams();
+  const [course, setCourse] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [modules, setModules] = useState([]);
 
-  // Fetch course data from the backend
+
   useEffect(() => {
     const fetchCourseData = async () => {
       try {
-        const response = await axios.get(`http://localhost:8080/courses/${course_id}`); // Replace with your backend URL
+        const response = await axios.get(BACKEND_API_URL+`/courses/${course_id}`);
         const courseData = response.data;
+        console.log(courseData)
 
-        setCourse(courseData); // Set course data
-        setLoading(false); // Set loading to false
+        setCourse(courseData); // Setting course data
+        setLoading(false);
+
+        const modulePromises = courseData.modules.map((moduleId) =>
+          axios.get(BACKEND_API_URL+`/modules/${moduleId}`).catch(() => null) // Handle individual module fetch failures
+        );
+        const modulesData = await Promise.all(modulePromises);
+        setModules(modulesData.filter((mod) => mod !== null).map((mod) => mod.data)); // Only use successful module fetches
+
+
       } catch (err) {
-        setError("Failed to fetch course data.");
+        setError("Failed to fetch course or module data.");
         setLoading(false);
       }
     };
@@ -49,7 +59,7 @@ const CourseHomePage = () => {
   // Unlock course handler
   const unlockCourse = async () => {
     try {
-      const response = await axios.put(`http://localhost:8080/courses/${course_id}/unlock`); // Backend API to unlock course
+      await axios.put(BACKEND_API_URL + `/courses/${course_id}/unlock`); // Backend API to unlock course
       setCourse({ ...course, isLocked: false }); // Update course state to unlocked
     } catch (err) {
       setError("Failed to unlock course.");
@@ -118,13 +128,13 @@ const CourseHomePage = () => {
           )}
         </MDBox>
 
-        {/* Divider */}
+
         <Divider />
 
-        {/* Modules Section */}
+
         <MDBox pt={2}>
           <Grid container spacing={4}>
-            {course.Modules.map((module, index) => (
+            {modules.map((module, index) => (
               <Grid item xs={12} key={module.id}>
                 <Card>
                   <MDBox p={3}>
@@ -140,7 +150,6 @@ const CourseHomePage = () => {
                       </MDTypography>
                     </MDBox>
 
-                    {/* Show Slide and Video for the first module or if the course is unlocked */}
                     {(!course.isLocked || index === 0) ? (
                       <>
                         {/* Module Slide (PDF) */}

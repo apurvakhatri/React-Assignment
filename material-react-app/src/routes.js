@@ -142,6 +142,7 @@ const routes = [
     route: "/authentication/sign-up",
     component: <SignUp />,
   },
+  //New route for Task 2
   {
     type: "collapse",
     name: "Reset Password",
@@ -150,6 +151,7 @@ const routes = [
     route: "/authentication/reset-password/cover",
     component: <ResetPasswordSideNav />,
   },
+  //New route for task 3
   {
     type: "examples",
     name: "Course Management",
@@ -190,6 +192,7 @@ const routes = [
     route: "/auth/reset-password",
     component: <ResetPassword />,
   },
+  // New route for Task 3
   {
     type: "course",
     name: "Course Home Page",

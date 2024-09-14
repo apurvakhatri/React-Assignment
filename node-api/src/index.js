@@ -39,6 +39,7 @@ app.get("/", function (req, res) {
 
 app.use("/", authRoutes);
 app.use("/me", meRoutes);
+// New courses and module routes added.
 app.use("/courses", courseRoutes);
 app.use("/modules", moduleRoutes);
 
